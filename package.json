@@ -3,13 +3,17 @@
     "version": "0.0.1",
     "description": "Project for Node API 2 Module",
     "private": true,
-    "main": "index.js",
+    "main": "index.ts",
     "scripts": {
-        "server": "nodemon index.js"
+        "server": "nodemon index.ts"
     },
     "dependencies": {
+        "@types/node": "^14.0.27",
+        "express": "^4.17.1",
         "knex": "^0.21.2",
-        "sqlite3": "^5.0.0"
+        "sqlite3": "^5.0.0",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7"
     },
     "devDependencies": {
         "nodemon": "^2.0.4"
