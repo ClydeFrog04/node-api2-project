@@ -13,8 +13,8 @@ const PostCards: React.FC<PostCardsProps> = ({posts}) => {
         <Container>
             <div className="postCards text-center w-50 mx-auto">
                 <Col>
-                    {posts.map(post => {
-                        return <PostCard post={post}/>;
+                    {posts.map((post, index) => {
+                        return <PostCard key={index} post={post}/>;
                     })}
                 </Col>
             </div>
