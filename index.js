@@ -13,5 +13,5 @@ server.get("/", (req,res) =>{
 });
 
 server.listen(process.env.PORT, ()=>{
-    console.log(`server listening on port 3000`);
+    console.log(`server listening on port ${process.env.PORT}`);
 });
