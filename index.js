@@ -12,6 +12,6 @@ server.get("/", (req,res) =>{
     res.json({message: "Sup"});
 });
 
-server.listen(3000, ()=>{
+server.listen(process.env.PORT, ()=>{
     console.log(`server listening on port 3000`);
 });

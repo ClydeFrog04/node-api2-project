@@ -6,22 +6,25 @@ const server = express.Router();
 server.use(express.json());
 
 //post reqs
-server.post("/api/posts", (req, res) => {
+server.post("/api/posts", async (req, res) => {
     if (!req.body.title || !req.body.contents) {
         return res.status(400).json({errorMessage: "Please provide title and contents for the post."});
     }
-    db.insert(req.body)
-        .then(post => res.status(201).json(post))
-        .catch(err => {
-            console.log(err.stack);
-            res.status(500).json({error: "There was an error while saving the post to the database"});
-        })
+    try {
+        const {id} = await db.insert(req.body);
+
+        const [post] = await db.findById(id);
+        res.status(201).json(post);
+    } catch(err){
+        console.log(err.stack);
+        res.status(500).json({error: "There was an error while saving the post to the database"});
+    }
 });
 
 server.post("/api/posts/:id/comments", (req, res) => {
     const id = req.params.id;
     const post = db.findById(req.params.id);
-    if(post === undefined || post.length <= 0) return res.status(404).json({message: "The post with the specified ID does not exist."});
+    if (post.length === 0) return res.status(404).json({message: "The post with the specified ID does not exist."});
     else if (!req.body.text) return res.status(400).json({errorMessage: "Please provide text for the comment."});
     db.insertComment({
         text: req.body.text,
@@ -49,7 +52,7 @@ server.get("/api/posts", (req, res) => {
 server.get("/api/posts/:id", (req, res) => {
     db.findById(req.params.id)
         .then(post => {
-            if (post !== undefined && post.length > 0) res.status(200).json(post);
+            if (post !== undefined && post.length > 0) res.status(200).json(post[0]);
             else res.status(404).json({message: "The post with the specified ID does not exist."});
         })
         .catch(err => {
@@ -90,8 +93,9 @@ server.put("/api/posts/:id", (req, res) => {
     if (post === undefined || post.length <= 0) return res.status(404).json({message: "The post with the specified ID does not exist."});
     else if (!req.body.title || !req.body.contents) return res.status(400).json({errorMessage: "Please provide title and contents for the post."});
     db.update(req.params.id, req.body)
-        .then(newPost => {
-            res.status(200).json(newPost);
+        .then(async changes => {
+            const [post] = await db.findById(req.params.id);
+            res.status(200).json(post);
         })
         .catch(err => {
             console.log(err.stack);
