@@ -9,7 +9,7 @@ server.use(cors());
 server.use(postsRouter);
 
 server.get("/", (req,res) =>{
-    res.json({message: "Sup"});
+    res.json({message: "Sup", fact: process.env.FUNFACT});
 });
 
 server.listen(process.env.PORT, ()=>{
